@@ -4,10 +4,18 @@
 # Short description of the task
 #
 import pandas as pd
+import os
+from glob import glob
 
 # 1. Input
-df =pd.read_excel('Financial_Sample.xlsx','Financial_Sample2.xlsx')
-data= { }
+folder_path ='C:\Users\User\Desktop\Vivian\BAAI'
+excel_files = [f for f in os.listdir(folder_path) if f.endswith(('.xlsx', '.xls'))]
+
+all_dataframes = []
+    for file_name in excel_files:
+        file_path = os.path.join(folder_path, file_name)
+        df = pd.read_excel(file_path)
+        all_dataframes.append(df)
 
 # 2. Process
 
