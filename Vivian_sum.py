@@ -5,11 +5,14 @@
 #
 
 # 1. Input
-X = 8
-Y = 7
+X =input('First number: ')
+Y = input('Second Number: ')
 
 # 2. Process
-Sum = X + Y
+A = int(X)
+B = int (Y)
+
+Sum = A+B
 
 # 3. Output
-print(f'Result {Sum}')
+print(f'Result {Sum}') 
