@@ -23,3 +23,4 @@ for file_name in excel_files:
 sums=df.select_dtypes(include='number').sum()
 print (sums)
 df_combined=pd.concat([df,sums],ignore_index=True)
+df_combined.to_excel(file_path, index=False)
