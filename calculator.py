@@ -10,3 +10,8 @@ products = [
 
 for product in products:
     print(f"Name: {product['name']}, Price: ${product['price']}, Category: {product['category']}")
+for product in products:
+    category = product ['category']
+
+#if category= "Electronics"
+#print("Total product: {total_product}","Total original price":{total_original_price},"Total discount:{}", "Total revenue:{}")
