@@ -4,7 +4,8 @@
 #
 
 # 1. Input
-
+Temperature = 30
 # 2. Process
-
+if Temperature >25:
+    print("It's too hot outside, Study hard in the library")
 # 3. Output
