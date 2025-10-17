@@ -10,6 +10,7 @@ products = [
 
 #the empty list to store all the discount, and then to calculate at the end
 discounted_product= []
+discount_amounts=[]
 #initial price and discount
 total_final_price=0
 total_final_discount=0
@@ -38,6 +39,7 @@ for product in products:
     total_final_price+=final_price
     total_final_discount+=discount_amount
     discounted_product.append((discount_amount,product))
+    discount_amounts.append((discount_amount))
     print(" ")
     print(f"Product: {product['name']}")
     print(f"Category: {product['category']}")
@@ -55,8 +57,12 @@ print(f"Total Final Price: ${total_final_price}")
 max_product_tuple=max(discounted_product, key=lambda x: x[0])
 max_discount = max_product_tuple [0]
 max_discount_product = max_product_tuple [1]
+average_discount=sum(discount_amounts)/len(discount_amounts)
 print(" ")  
 print("===Product with highest discount===")
 print(f"product name:{max_discount_product['name']} ")
 print(f"discount: ${max_discount} ")
+print(f"average discount across all product: $ {average_discount:.2f}")
 
+print("")
+print("The most expensive and cheapest product")
