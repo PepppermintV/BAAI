@@ -5,8 +5,11 @@
 
 # 1. Input
 # Temperature = int(input("Temperature: "))
-# if Temperature > 25:
+# if Temperature >= 25:
 #     print("It's too hot outside, Study hard in the library")
+# else:
+#     print("It's perfect weather to go outside")
+
 
 # 2. Process
 # for i in range (1,6):
@@ -17,12 +20,10 @@
 
 order_value =[120, 450, 80, 300, 650]
 total_revenue= 0
-
 for order in order_value:
     total_revenue+=order
+    total_item=len(order_value)
     print(f"Processing order:${order}")
-    
-total_item =order_value.count(order)
 print (f"\nTotal Revenue: ${total_revenue}")
-print (f"\nTotal Item:${total_item}")
+print (f"\nTotal Item:{total_item}")
 # 3. Output
