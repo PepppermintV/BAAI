@@ -1,0 +1,17 @@
+#
+# Vivian, 28/11/2025
+# Data: Customer_Data.csv
+#
+
+import pandas as pd
+# 1. Input
+df= pd.read_csv ("customer_data.csv")
+
+print (df)
+
+# 2. Process
+#
+# 3. Output
+# 
+# 
+
