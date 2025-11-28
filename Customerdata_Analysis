@@ -7,8 +7,11 @@ import pandas as pd
 # 1. Input
 df= pd.read_csv ("customer_data.csv")
 
-print (df)
+#print (df.head(5))
+#print (df.info[])
+#print (df.describe())
 
+print (df[['satisfaction_score','purchase_amount','purchase_frequency']].describe())
 # 2. Process
 #
 # 3. Output
