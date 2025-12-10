@@ -1,0 +1,108 @@
+import pandas as pd
+import numpy as np
+from scipy import stats
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# load data
+df = pd.read_csv("APL_FinancialReport.csv")
+print(f'Dataset shape: {df.shape}')
+
+num_cols = ["Stock_Price", "Sales_Revenue", "Net_Income", "Operating_Income", "Marketing_Expenses", "Total_Assets", "Total_Liabilities"]
+for c in num_cols:
+    if c in df.columns:
+        df[c] = pd.to_numeric(df[c], errors='coerce')
+
+# format into billions
+def format_billions(x, places=2):
+    if pd.isna(x):
+        return "NaN"
+    return f"{x:.{places}f}B"
+
+# Calculate summary statistics
+summary = df[num_cols].describe().loc[["count", "mean", "std", "min", "max"]]
+
+# Add missing value counts as a row
+missing_row = df[num_cols].isna().sum()
+summary.loc["missing"] = missing_row
+
+# Outlier Detection using Z-Score (before renaming count)
+z_scores = np.abs(stats.zscore(df[num_cols].dropna()))
+outlier_mask = z_scores > 3
+outlier_count_row = outlier_mask.any(axis=1).sum()
+summary.loc["outliers"] = outlier_count_row
+
+# Rename "count" to "N"
+summary = summary.rename(index={"count": "N"})
+
+# Display analytical summary)
+summary_display = summary.copy().astype(str)
+for stat in ["mean", "std", "min", "max"]:
+    summary_display.loc[stat] = summary_display.loc[stat].apply(lambda v: format_billions(float(v), 2) if v != 'nan' else "NaN")
+
+print(" ")
+print("=== Analytical Statistics ===")
+print(summary_display.T.to_string())
+
+# Calculate Cronbach's alpha 
+profit_items = df[[ "Sales_Revenue","Net_Income","Operating_Income", "Marketing_Expenses"]]
+item_var_profit = profit_items.var(axis=0, ddof=1)
+total_var_profit = profit_items.sum(axis=1).var(ddof=1)
+k_profit = len(profit_items.columns) # Number of items (4)
+alpha_profit = (k_profit / (k_profit - 1)) * (1 - item_var_profit.sum() / total_var_profit)
+
+health_items = df[["Total_Assets","Total_Liabilities"]]
+item_var_asset = health_items.var(axis=0, ddof=1)
+total_var_asset = health_items.sum(axis=1).var(ddof=1)
+k_asset = len(health_items.columns) # Number of items (2)
+alpha_health = (k_asset / (k_asset - 1)) * (1 - item_var_asset.sum() / total_var_asset)
+print(" ")
+print("=== Reliability Test ===")
+print(f"Cronbach's Alpha of the profitability metrics : {alpha_profit:.2f}")
+print(f"Cronbach's Alpha of the financial health metrics: {alpha_health:.2f}")
+
+# correlation matrix
+print(" ")
+print("=== Correlation Matrix ===")
+correlation_matrix=df.iloc[:,1:8].corr()
+print(correlation_matrix.round(3))
+
+
+print(" ")
+print("=== Significance Test===")
+data_subset = df.iloc[:, 1:8]
+correlation_matrix = data_subset.corr()
+
+def calculate_pvalues(df_data):
+    cols = df_data.columns
+    p_values_matrix = pd.DataFrame(index=cols, columns=cols)
+    
+    for i in range(len(cols)):
+        for j in range(len(cols)):
+            _, p_value = pearsonr(df_data[cols[i]], df_data[cols[j]])
+            p_values_matrix.iloc[i, j] = p_value
+            
+    return p_values_matrix.astype(float) 
+
+p_values_matrix = calculate_pvalues(data_subset)
+print(p_values_matrix.round(3))
+
+sns.heatmap (correlation_matrix)
+plt.title ('Correlation Matrix')
+plt.tight_layout()
+plt.show()
+
+# Regression Analysis (Scatterplot)
+x=df['Stock_Price']
+y=df['Marketing_Expenses']
+slope, intercept, r, p, std_err = stats.linregress(x,y)
+def myfunc(x):
+  return slope * x + intercept
+mymodel = list(map(myfunc, x))
+plt.title ('Scatterplot')
+plt.scatter(x,y)
+plt.plot(x, mymodel)
+plt.xlabel('Stock_Price')
+plt.ylabel('Marketing_Expenses')
+plt.show()
